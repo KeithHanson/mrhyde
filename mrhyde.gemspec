@@ -24,6 +24,8 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "lib/mrhyde.rb",
+     "mrhyde-0.0.0.gem",
+     "mrhyde.gemspec",
      "spec/mrhyde_spec.rb",
      "spec/spec_helper.rb"
   ]
