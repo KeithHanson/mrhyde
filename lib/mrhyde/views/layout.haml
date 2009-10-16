@@ -1,0 +1,12 @@
+!!!
+%html
+  %head
+    %title 
+      Comments for 
+      = options.blog_name
+  %body
+    =yield
+  %script{:type => "text/javascript", :src => "https://rpxnow.com/openid/v2/widget"}=""
+  :javascript
+    RPXNOW.overlay = true;
+    RPXNOW.language_preference = 'en';

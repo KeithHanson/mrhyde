@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
+
+help = <<HELP
+Mr. Hyde is a companion application for Jekyll
+HELP
+
+require 'optparse'
+require 'mrhyde'
+
+options = {}
+
+opts = OptionParser.new do |opts|
+  opts.banner = help
+  
+  opts.on("--server [PORT]", "Start web server (default port 4000)") do |port|
+    options['server'] = true
+    options['server_port'] = port unless port.nil?
+  end
+  
+  opts.on("--daemon", "Runs the webserver in daemon mode") do
+    options['daemon'] = true
+  end
+  
+  opts.on("--disable-github", "Disables github hooks") do
+    options['github'] = false
+  end
+  
+  opts.on("--set-rpx-key KEY", "Sets the configuration file's RPX key") do |key|
+    options['rpx_key'] = key
+  end
+  
+  opts.on("--set-admin USER", "Sets the configuration file's admin user") do |user|
+    options['admin'] = user
+  end
+  
+  opts.on("--rackup [DIR]", "Generates the rackup file") do |directory|
+    options['rackup'] = true
+    options['rackup_directory'] = directory unless directory.nil?
+  end
+  
+  opts.on("--start-redis [PORT]", "Starts the required redis server") do |port|
+    options['redis'] = true
+    options['redis_port'] = port unless port.nil?
+  end
+  
+  opts.on("--generate-default [DIR]", "Generates default site structure") do |directory|
+    options['generate'] = true
+    options['generate_directory'] = directory unless directory.nil?
+  end
+end
+
+opts.parse!
+
+if options.keys.empty?
+  puts "Run `mrhyde --help` for options" 
+  exit(1)
+end
+
+options['github'] = true unless options['github']
