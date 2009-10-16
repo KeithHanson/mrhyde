@@ -1,5 +1,3 @@
-require 'ruby-debug'
-
 class Main
   helpers do
     def authenticated?
