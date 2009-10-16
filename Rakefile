@@ -11,6 +11,7 @@ begin
     gem.homepage = "http://github.com/KeithHanson/mrhyde"
     gem.authors = ["Keith Hanson"]
     gem.add_development_dependency "rspec"
+    gem.add_development_dependency "ruby-debug"
     gem.add_dependency('sinatra', '>= 0.9.2')
     gem.add_dependency('haml', '>= 2.2.2')
     gem.add_dependency('ohm', '>= 0.0.25')
