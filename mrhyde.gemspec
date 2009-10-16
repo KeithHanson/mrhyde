@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
      "lib/mrhyde/views/index.haml",
      "lib/mrhyde/views/layout.haml",
      "lib/mrhyde/views/login.haml",
+     "mrhyde.gemspec",
      "spec/mrhyde_spec.rb",
      "spec/spec_helper.rb"
   ]
