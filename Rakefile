@@ -5,9 +5,9 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "mrhyde"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
-    gem.email = "seraphimrhapsody@gmail.com[color]"
+    gem.summary = %Q{Mr. Hyde aims to be a simple yet powerful comment system for Jekyll-based blogs}
+    gem.description = %Q{Mr. Hyde is a companion to Jekyll, the blog-aware, static site generator in Ruby. It provides methods of generating the site via github hooks, providing commenting functions, as well as various other niceties.}
+    gem.email = "keith@rubyengineer.com[color]"
     gem.homepage = "http://github.com/KeithHanson/mrhyde"
     gem.authors = ["Keith Hanson"]
     gem.add_development_dependency "rspec"

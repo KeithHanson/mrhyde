@@ -1,6 +1,6 @@
-= mrhyde
+= Mr. Hyde
 
-Description goes here.
+Mr. Hyde aims to be a simple yet powerful comment system for Jekyll-based blogs
 
 == Note on Patches/Pull Requests
  
