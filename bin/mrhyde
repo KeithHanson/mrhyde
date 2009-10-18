@@ -7,8 +7,6 @@ Mr. Hyde is a companion application for Jekyll
 HELP
 
 require 'optparse'
-require 'mrhyde'
-
 options = {}
 
 opts = OptionParser.new do |opts|
@@ -19,22 +17,10 @@ opts = OptionParser.new do |opts|
     options['server_port'] = port unless port.nil?
   end
   
-  opts.on("--daemon", "Runs the webserver in daemon mode") do
-    options['daemon'] = true
-  end
-  
   opts.on("--disable-github", "Disables github hooks") do
     options['github'] = false
   end
-  
-  opts.on("--set-rpx-key KEY", "Sets the configuration file's RPX key") do |key|
-    options['rpx_key'] = key
-  end
-  
-  opts.on("--set-admin USER", "Sets the configuration file's admin user") do |user|
-    options['admin'] = user
-  end
-  
+    
   opts.on("--rackup [DIR]", "Generates the rackup file") do |directory|
     options['rackup'] = true
     options['rackup_directory'] = directory unless directory.nil?
@@ -45,9 +31,8 @@ opts = OptionParser.new do |opts|
     options['redis_port'] = port unless port.nil?
   end
   
-  opts.on("--generate-default [DIR]", "Generates default site structure") do |directory|
-    options['generate'] = true
-    options['generate_directory'] = directory unless directory.nil?
+  opts.on("--rpx-key KEY", "Defines the RPX API key for logins") do |rpx_key|
+    options['rpx_key'] = rpx_key
   end
 end
 
@@ -59,3 +44,28 @@ if options.keys.empty?
 end
 
 options['github'] = true unless options['github']
+options['redis_port'] = 6379 unless options['redis_port']
+
+if options['rpx_key'].nil?
+  puts "Please specify your RPX key for logging in with --rpx-key"
+end
+
+require 'sinatra/base'
+
+class Main < Sinatra::Base
+  enable :dump_errors, :logging, :static
+  
+  set :app_file, File.join(File.dirname(__FILE__), "..", "lib", "mrhyde.rb")
+  set :root, File.join(File.dirname(__FILE__), "..", "lib", "mrhyde")
+  set :environment, :development
+  use Rack::Session::Cookie
+  
+  def self.rpx
+    @@rpx ||= Evri::RPX::Session.new(options.rpx_key)
+  end
+end
+
+Main.set :run, options['server']
+Main.set :rpx_key, options['rpx_key']
+
+require 'mrhyde'

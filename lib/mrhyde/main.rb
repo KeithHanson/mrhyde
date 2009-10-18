@@ -1,3 +1,5 @@
+require 'ruby-debug'
+
 class Main
   helpers do
     def authenticated?
@@ -5,8 +7,11 @@ class Main
     end
   end
   
-  get '/' do
-    haml :index
+  get '/regenerate_blog' do
+    debugger
+    jekyll_options = Jekyll.configuration({})
+    site = Jekyll::Site.new(jekyll_options)
+    "HI!"
   end
   
   get '/login' do
@@ -15,15 +20,12 @@ class Main
   
   post '/rpx_token_url' do
     @user = Main.rpx.auth_info(params['token'])
-    #...
+    #... setup session user
   end
   
-  get '/:post_slug' do |post_slug|
-    
-  end
-  
-  post '/:post_slug/comment' do |post_slug|
+  post '/comment/:post_slug' do |post_slug|
     redirect "/login" unless authenticated?
+    #... create new post, regenerate site
   end
   
 end

@@ -16,6 +16,7 @@ begin
     gem.add_dependency('haml', '>= 2.2.2')
     gem.add_dependency('ohm', '>= 0.0.25')
     gem.add_dependency('evri_rpx', '>= 1.0.0')
+    gem.add_dependency('jekyll', '>= 0.5.4')
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
