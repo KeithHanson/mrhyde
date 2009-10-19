@@ -8,14 +8,10 @@ class Main
   end
   
   get '/regenerate_blog' do
-    debugger
     jekyll_options = Jekyll.configuration({})
     site = Jekyll::Site.new(jekyll_options)
-    "HI!"
-  end
-  
-  get '/login' do
-    haml :login
+    site.process
+    ""
   end
   
   post '/rpx_token_url' do
@@ -23,9 +19,17 @@ class Main
     #... setup session user
   end
   
+  get '/comment/login' do
+    haml :login
+  end
+  
   post '/comment/:post_slug' do |post_slug|
     redirect "/login" unless authenticated?
     #... create new post, regenerate site
+  end
+  
+  get '/comment/is_logged_in.json' do
+    "{authenticated: #{authenticated?}}"
   end
   
 end

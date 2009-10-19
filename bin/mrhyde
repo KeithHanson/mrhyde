@@ -16,10 +16,6 @@ opts = OptionParser.new do |opts|
     options['server'] = true
     options['server_port'] = port unless port.nil?
   end
-  
-  opts.on("--disable-github", "Disables github hooks") do
-    options['github'] = false
-  end
     
   opts.on("--rackup [DIR]", "Generates the rackup file") do |directory|
     options['rackup'] = true
@@ -33,6 +29,10 @@ opts = OptionParser.new do |opts|
   
   opts.on("--rpx-key KEY", "Defines the RPX API key for logins") do |rpx_key|
     options['rpx_key'] = rpx_key
+  end
+  
+  opts.on("--templates-directory DIR", "Defines the directory holding login/comment templates") do |directory|
+    options['templates_directory'] = directory
   end
 end
 
@@ -48,15 +48,21 @@ options['redis_port'] = 6379 unless options['redis_port']
 
 if options['rpx_key'].nil?
   puts "Please specify your RPX key for logging in with --rpx-key"
+  exit(1)
+end
+
+if options['templates_directory'].nil?
+  puts "Please specify your templates directory with --templates-directory DIRNAME"
+  exit(1)
 end
 
 require 'sinatra/base'
+require 'ohm'
 
 class Main < Sinatra::Base
   enable :dump_errors, :logging, :static
   
   set :app_file, File.join(File.dirname(__FILE__), "..", "lib", "mrhyde.rb")
-  set :root, File.join(File.dirname(__FILE__), "..", "lib", "mrhyde")
   set :environment, :development
   use Rack::Session::Cookie
   
@@ -67,5 +73,8 @@ end
 
 Main.set :run, options['server']
 Main.set :rpx_key, options['rpx_key']
+Main.set :root, options['templates_directory']
+
+Ohm.connect(:port => options['redis_port'])
 
 require 'mrhyde'
