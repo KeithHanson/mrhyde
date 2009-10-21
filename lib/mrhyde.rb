@@ -9,4 +9,9 @@ require 'ruby-debug'
 require File.join(ROOT_DIR, "mrhyde", "mrhyde.rb")
 require File.join(ROOT_DIR, "mrhyde", "main.rb")
 
-Main.run! if Main.run?
+begin
+  MrHyde::Comment.all.count
+  Main.run! if Main.run?
+rescue
+  puts "FAIL: Please ensure your Redis server is running."
+end

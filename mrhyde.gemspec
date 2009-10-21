@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Keith Hanson"]
-  s.date = %q{2009-10-18}
+  s.date = %q{2009-10-19}
   s.default_executable = %q{mrhyde}
   s.description = %q{Mr. Hyde is a companion to Jekyll, the blog-aware, static site generator in Ruby. It provides methods of generating the site via github hooks, providing commenting functions, as well as various other niceties.}
   s.email = %q{keith@rubyengineer.com[color]}
@@ -28,7 +28,6 @@ Gem::Specification.new do |s|
      "bin/mrhyde",
      "lib/mrhyde.rb",
      "lib/mrhyde.ru",
-     "lib/mrhyde/database/.gitignore",
      "lib/mrhyde/main.rb",
      "lib/mrhyde/mrhyde.rb",
      "mrhyde.gemspec",
