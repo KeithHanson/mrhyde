@@ -1,10 +1,10 @@
 module MrHyde
-  class User < Ohm::Model
-    attribute :identifier
-    attribute :display_name
-    attribute :photo
-    
-    index :identifier
+  class User 
+    include Mongoid::Document
+
+    field :identifier
+    field :display_name
+    field :photo
     
     def self.default_gravitar
       default_image_url = "http://www.gravatar.com/avatar.php?gravatar_id=d41d8cd98f00b204e9800998ecf8427e"
@@ -47,12 +47,19 @@ module MrHyde
     end
   end
   
-  class Comment < Ohm::Model
-    attribute :user_id
-    attribute :post_slug
-    attribute :comment
-    
-    index :post_slug
+  class Comment
+    include Mongoid::Document
+    include Mongoid::Timestamps
+
+    field :post_slug
+
+    field :name
+    field :email
+    field :commenter_url
+
+    field :comment
+
+    embeds_many :comments
   end
 end
 
@@ -61,7 +68,7 @@ module Jekyll
     attr_accessor :comments
     
     def get_comments
-      MrHyde::Comment.find(:post_slug, self.slug).all
+      MrHyde::Comment.find(:all, :conditions => {:post_slug => self.slug})
     end
     
     alias :old_initialize :initialize
@@ -70,16 +77,14 @@ module Jekyll
       old_initialize(site, source, dir, name)
       self.comments = get_comments
     end
-    
+
     alias :old_to_liquid :to_liquid
     
     def to_liquid
       {
         "slug" => self.slug,
         "comments" => self.comments,
-        "comment_post_url" => "/comment/#{self.slug}",
-        "comment_login_url" => "/comment/login",
-        "ajax_logged_in_check_url" => "/comment/is_logged_in.json"
+        "comment_post_url" => "/comment/#{self.slug}"
       }.deep_merge(self.old_to_liquid)
     end
   end

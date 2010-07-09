@@ -1,12 +1,14 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
+require 'ruby-debug'
 $:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 
 help = <<HELP
 Mr. Hyde is a companion application for Jekyll
 HELP
 
-require 'optparse'
+require 'mrhyde'
 options = {}
 
 opts = OptionParser.new do |opts|
@@ -22,10 +24,6 @@ opts = OptionParser.new do |opts|
     options['rackup_directory'] = directory unless directory.nil?
   end
   
-  opts.on("--rpx-key KEY", "Defines the RPX API key for logins") do |rpx_key|
-    options['rpx_key'] = rpx_key
-  end
-  
   opts.on("--templates-directory DIR", "Defines the directory holding login/comment templates") do |directory|
     options['templates_directory'] = directory
   end
@@ -38,35 +36,24 @@ if options.keys.empty?
   exit(1)
 end
 
-options['github'] = true unless options['github']
-options['redis_port'] = 6379 unless options['redis_port']
-
-if options['rpx_key'].nil?
-  puts "Please specify your RPX key for logging in with --rpx-key"
-  exit(1)
-end
+options['mongoid_port'] = 27017 unless options['mongoid_port']
 
 if options['templates_directory'].nil?
   puts "Using Default Templates. You can specify a templates directory with --templates-directory DIR"
 end
 
-require 'sinatra/base'
-require 'ohm'
-
-class Main < Sinatra::Base
-  enable :dump_errors, :logging, :static
-  
-  set :app_file, File.join(File.dirname(__FILE__), "..", "lib", "mrhyde.rb")
-  set :root, File.join(File.dirname(__FILE__), "..", "lib", "mrhyde")
-  set :post_login_redirect, "/" 
-  use Rack::Session::Cookie
-end
-
 Main.set :run, options['server']
 Main.set :port, options['server_port'] if options['server_port']
-Main.set :rpx_key, options['rpx_key']
 Main.set :root, options['templates_directory'] if options['templates_directory'].nil?
 
-Ohm.connect(:port => options['redis_port'])
+Mongoid.configure do |config|
+  name = "mrhyde_comments"
+  config.master = Mongo::Connection.new('localhost', options['mongoid_port']).db(name)
+end
 
-require 'mrhyde'
+begin
+  MrHyde::Comment.all.count
+  Main.run! if Main.run?
+rescue
+  puts "ERROR: Please ensure your MongoDB server is running."
+end

@@ -1,17 +1,23 @@
 ROOT_DIR = File.expand_path(File.dirname(__FILE__)) unless defined? ROOT_DIR
 
 require 'rubygems'
+
+require 'optparse'
+require 'sinatra/base'
+require 'mongoid'
+
+class Main < Sinatra::Base
+  enable :dump_errors, :logging, :static
+  
+  set :app_file, File.join(File.dirname(__FILE__), "mrhyde.rb")
+  set :root, File.join(File.dirname(__FILE__), "mrhyde")
+  set :post_login_redirect, "/" 
+  use Rack::Session::Cookie
+end
+
 require 'haml'
-require 'evri_rpx'
 require 'jekyll'
 require 'ruby-debug'
 
-require File.join(ROOT_DIR, "mrhyde", "mrhyde.rb")
-require File.join(ROOT_DIR, "mrhyde", "main.rb")
-
-begin
-  MrHyde::Comment.all.count
-  Main.run! if Main.run?
-rescue
-  puts "FAIL: Please ensure your Redis server is running."
-end
+require 'mrhyde/mrhyde'
+require 'mrhyde/main'
